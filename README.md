@@ -231,7 +231,7 @@ We provide three model sizes on Hugging Face: **2B**, **7B**, and **72B**. To ac
 Run the command below to start an OpenAI-compatible API service:
 
 ```bash
-python -m vllm.entrypoints.openai.api_server --served-model-name ui-tars --model <path to your model>
+python -m vllm.entrypoints.openai.api_server --served-model-name ui-tars --model <path to your model> --limit-mm-per-prompt "image=10"
 ```
 
 Then you can use the chat API as below with the gui prompt (choose from mobile or computer) and base64-encoded local images (see [OpenAI API protocol document](https://platform.openai.com/docs/guides/vision/uploading-base-64-encoded-images) for more details), you can also use it in [UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop):
