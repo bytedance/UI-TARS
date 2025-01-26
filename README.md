@@ -392,7 +392,7 @@ call_user() # Submit the task and call the user when the task is unsolvable, or 
 
 
 ## Note
-- Use Chinese in `Thought` part.
+- Use English in `Thought` part.
 - Summarize your next action (with its target element) in one sentence in `Thought` part.
 
 ## User Instruction
