@@ -205,8 +205,9 @@ UI-TARS is a next-generation native GUI agent model designed to interact seamles
 ## Deployment
 
 ### Cloud Deployment
-We recommend using HuggingFace Inference Endpoints for fast deployment.
-We provide two docs for reference:
+We recommend using HuggingFace Inference Endpoints for fast deployment. There is a one-click deploy option in the [Hugging Face Inference Catalog](https://endpoints.huggingface.co/new?repository=bytedance-research%2FUI-TARS-72B-DPO&vendor=aws&region=us-east-1&accelerator=gpu&instance_id=aws-us-east-1-nvidia-l40s-x8&task=image-text-to-text&no_suggested_compute=true&env_CUDA_GRAPHS=0&env_PAYLOAD_LIMIT=8000000)
+
+We also provide two docs for reference if you want to customize your deployment:
 
 English version: [GUI Model Deployment Guide](https://juniper-switch-f10.notion.site/GUI-Model-Deployment-Guide-17b5350241e280058e98cea60317de71)
 
