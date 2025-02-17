@@ -26,7 +26,13 @@ We appreciate your understanding and patience as we work to ensure the best poss
 
 
 ## Overview
-UI-TARS is a next-generation native GUI agent model designed to interact seamlessly with graphical user interfaces (GUIs) using human-like perception, reasoning, and action capabilities. Unlike traditional modular frameworks, UI-TARS integrates all key components—perception, reasoning, grounding, and memory—within a single vision-language model (VLM), enabling end-to-end task automation without predefined workflows or manual rules.
+UI-TARS is a next-generation native GUI agent model that enables seamless interaction with graphical user interfaces (GUIs). It combines **perception, reasoning, grounding, and memory** into a single vision-language model (VLM), allowing for end-to-end task automation without predefined workflows or manual rules.
+
+Key Highlights:
+- **Human-like interaction**: Mimics human perception, reasoning, and action.
+- **Unified framework**: Integrates all components into a single model.
+- **Cross-platform support**: Works across desktop, mobile, and web environments.
+
 ![Local Image](figures/UI-TARS-vs-Previous-SOTA.png)
 ![Local Image](figures/UI-TARS.png)
 
