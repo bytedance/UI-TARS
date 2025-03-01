@@ -235,11 +235,10 @@ We provide three model sizes on Hugging Face: **2B**, **7B**, and **72B**. To ac
 
 
 #### Start an OpenAI API Service
-Run the command below to start an OpenAI-compatible API service. It is recommended to set the tensor parallel size `-tp=1` for 7B models and `-tp=4` for 72B models.
+Run the command below to start an OpenAI-compatible API service. It is recommended to set the tensor parallel size `--tensor-parallel-size 1` for 7B models and `--tensor-parallel-size 4` for 72B models.
 
 ```bash
-python -m vllm.entrypoints.openai.api_server --served-model-name ui-tars \
-    --model <path to your model> --limit-mm-per-prompt image=5 -tp <tp>
+vllm serve "<path_to_model>" --served-model-name ui-tars --limit-mm-per-prompt image=5 --tensor-parallel-size <tp>
 ```
 
 Then you can use the chat API as below with the gui prompt (choose from mobile or computer) and base64-encoded local images (see [OpenAI API protocol document](https://platform.openai.com/docs/guides/vision/uploading-base-64-encoded-images) for more details), you can also use it in [UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop):
