@@ -235,7 +235,7 @@ We provide three model sizes on Hugging Face: **2B**, **7B**, and **72B**. To ac
 
 
 #### Start an OpenAI API Service
-Run the command below to start an OpenAI-compatible API service. It is recommended to set the tensor parallel size `--tensor-parallel-size 1` for 7B models and `--tensor-parallel-size 4` for 72B models.
+Run the command below to start an OpenAI-compatible API service. It is recommended to set `--tensor-parallel-size 1` for 7B models and `--tensor-parallel-size 4` for 72B models.
 
 ```bash
 vllm serve "<path_to_model>" --served-model-name ui-tars --limit-mm-per-prompt image=5 --tensor-parallel-size <tp>
