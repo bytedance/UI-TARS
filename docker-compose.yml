@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  ui-tars:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - model-cache:/app/model
+    environment:
+      - HF_MODEL_ID=ByteDance-Seed/UI-TARS-1.5-7B
+      - TRANSFORMERS_CACHE=/app/model
+      - HF_HOME=/app/model
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # Optional inference client
+  ui-tars-infer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - model-cache:/app/model
+    environment:
+      - SERVER_URL=http://ui-tars:8000/v1/chat/completions
+    depends_on:
+      - ui-tars
+    command: infer /app/data/your_screenshot.png "Your instruction here"
+    profiles:
+      - infer
+
+volumes:
+  model-cache:
+    driver: local
