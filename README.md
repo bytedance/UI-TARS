@@ -13,6 +13,7 @@
 We also offer a **UI-TARS-desktop** version, which can operate on your **local personal device**. To use it, please visit [https://github.com/bytedance/UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop). To use UI-TARS in web automation, you may refer to the open-source project [Midscene.js](https://github.com/web-infra-dev/Midscene).
 
 ## Updates
+- 🐳 2025.04.24: Added Docker containerization, coordinate processing tools, and webpage analysis features. See [Docker Deployment Guide](README_docker.md).
 - 🌟 2025.04.16: We shared the latest progress of the UI-TARS-1.5 model in our [blog](https://seed-tars.com/1.5), which excels in playing games and performing GUI tasks, and we open-sourced the [UI-TARS-1.5-7B](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B).
 - ✨ 2025.03.23: We updated the OSWorld inference scripts from the original official [OSWorld repository](https://github.com/xlang-ai/OSWorld/blob/main/run_uitars.py). Now, you can use the OSWorld official inference scripts to reproduce our results.
 
@@ -34,13 +35,63 @@ Leveraging the foundational architecture introduced in [our recent paper](https:
     </video>
 <p>
 
-## Deployment
-- See the deploy guide <a href="README_deploy.md">here</a>.
-- For coordinates processing, refer to <a href="README_coordinates.md">here</a>.
-- For full action space parsing, refer to [OSWorld uitars_agent.py](https://github.com/xlang-ai/OSWorld/blob/main/mm_agents/uitars_agent.py)
+## Core Features
+
+UI-TARS provides several key capabilities:
+
+1. **GUI Interaction**: Automatically interact with graphical user interfaces through vision-language models
+2. **Multi-Platform Support**: Works with desktop, mobile, and web interfaces
+3. **Action Generation**: Produces precise interface actions (clicks, typing, scrolling) with coordinate mapping
+4. **Visual Understanding**: Comprehends interface elements, their relationships, and functions
+5. **Webpage Analysis**: Converts UI screenshots to structured plaintext descriptions
+6. **Coordinate Processing**: Maps model output coordinates to actual screen positions
+
+## System Architecture
+
+UI-TARS consists of the following components:
+
+1. **Vision-Language Model**: Processes screenshots to understand interface elements
+2. **Action Space**: Defines possible interactions (click, drag, type, etc.)
+3. **Coordinate System**: Maps model outputs to actual screen positions
+4. **Prompt System**: Configures model behavior for different platforms and tasks
+5. **API Interface**: Provides OpenAI-compatible endpoints for integration
+
+## Deployment Options
+
+### 1. Docker Container (Recommended)
+- Comprehensive Docker setup with GPU support
+- See the [Docker Deployment Guide](README_docker.md)
+- Includes web analysis and coordinate processing tools
+
+### 2. HuggingFace Inference Endpoints
+- Cloud-based deployment on HuggingFace infrastructure
+- See the [HuggingFace deploy guide](README_deploy.md)
+
+### 3. Local Development
+- For coordinates processing, refer to [Coordinates Guide](README_coordinates.md)
+- For action space parsing, refer to [OSWorld uitars_agent.py](https://github.com/xlang-ai/OSWorld/blob/main/mm_agents/uitars_agent.py)
+
+## Usage Examples
+
+### GUI Interaction
+```python
+# Example of using UI-TARS for GUI interaction
+response = ui_tars.process_screenshot(
+    image_path="screenshot.png",
+    instruction="Click on the search button"
+)
+# Response: Action: click(start_box='(197,525)')
+```
+
+### Webpage Analysis
+```bash
+# Docker container command for webpage analysis
+docker-compose exec ui-tars /app/entrypoint.sh analyze-webpage \
+  /app/data/webpage_screenshot.png /app/data/analysis.txt
+```
 
 ## System Prompts
-- Refer to <a href="./prompts.py">prompts.py</a>
+- Refer to <a href="./prompts.py">prompts.py</a> for system prompt templates
 
 
 ## Performance

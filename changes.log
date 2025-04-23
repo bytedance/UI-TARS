@@ -1,0 +1,31 @@
+# UI-TARS Project Changes Log
+
+## [2025-04-24] Docker and Analysis Features
+
+Added Docker containerization and web analysis capabilities:
+
+### New Files
+1. `CLAUDE.md` - Guidelines for Claude AI when working with this repository
+2. `Dockerfile` - Container definition for running UI-TARS with GPU support
+3. `docker-compose.yml` - Docker Compose configuration for easy deployment
+4. `README_docker.md` - Comprehensive guide for Docker deployment
+5. `client_script.py` - Python client for interacting with the UI-TARS API
+6. `coordinate_processing_script.py` - Standalone script for processing model coordinate outputs
+7. `webpage_analyzer.py` - Tool for analyzing webpage screenshots and generating plaintext descriptions
+8. `example_webpage_analysis.txt` - Sample output showing webpage analysis format
+
+### Key Features Added
+1. Complete Docker containerization of UI-TARS model
+2. OpenAI-compatible API server using vLLM
+3. GPU-accelerated inference with tensor parallelism support
+4. Coordinate processing standalone tool
+5. Webpage screenshot analysis capability
+6. Extensive documentation for Docker deployment
+
+### Technical Details
+- Added support for the UI-TARS-1.5-7B model from HuggingFace
+- Implemented efficient model loading and caching
+- Created GPU-optimized container configuration
+- Built OpenAI-compatible API interface
+- Developed helper scripts for coordinate transformation
+- Created webpage analysis functionality for converting UI to plaintext
