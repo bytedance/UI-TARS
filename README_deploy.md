@@ -20,9 +20,9 @@ We use HuggingFace's Inference Endpoints platform to quickly deploy a cloud-base
 
     - **Container Configuration**  
         - Set the following parameters:  
-            - `Max Number of Tokens (per Query)`: 65536  
-            - `Max Batch Prefill Tokens`: 65536  
-            - `Max Input Length (per Query)`: 65537  
+            - `Max Input Length (per Query)`: 65536
+            - `Max Batch Prefill Tokens`: 65536
+            - `Max Number of Tokens (per Query)`: 65537
         ![Container Configuration](https://huggingface.co/datasets/JjjFangg/Demo_video/resolve/main/deployment_4_formal.png?download=true)
 
     - **Environment Variables**  
