@@ -4,11 +4,15 @@
 
 # UI-TARS: Pioneering Automated GUI Interaction with Native Agents -->
 ![Local Image](figures/writer.png)
-<p align="center">
+<div align="center">
+<p>
         🌐 <a href="https://seed-tars.com/">Website</a>&nbsp&nbsp | 🤗 <a href="https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B">Hugging Face Models</a>&nbsp&nbsp 
         | &nbsp&nbsp 🔧 <a href="README_deploy.md">Deployment</a> &nbsp&nbsp  | &nbsp&nbsp 📑 <a href="https://arxiv.org/abs/2501.12326">Paper</a> &nbsp&nbsp  |&nbsp&nbsp</a>
 🖥️ <a href="https://github.com/bytedance/UI-TARS-desktop">UI-TARS-desktop</a>&nbsp&nbsp  <br>🏄 <a href="https://github.com/web-infra-dev/Midscene">Midscene (Browser Automation) </a>&nbsp&nbsp | &nbsp&nbsp🫨 <a href="https://discord.gg/pTXwYVjfcs">Discord</a>&nbsp&nbsp
 </p>
+
+[![](https://trendshift.io/api/badge/repositories/13561)](https://trendshift.io/repositories/13561)
+</div>
 
 We also offer a **UI-TARS-desktop** version, which can operate on your **local personal device**. To use it, please visit [https://github.com/bytedance/UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop). To use UI-TARS in web automation, you may refer to the open-source project [Midscene.js](https://github.com/web-infra-dev/Midscene).
 **❗Notes**: Since Qwen 2.5vl based models ultilizes absolute coordinates to ground objects, please kindly refer to our illustration about how to process coordinates in this <a href="README_coordinates.md">guide</a>.
