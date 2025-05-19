@@ -347,7 +347,7 @@ def parsing_response_to_pyautogui_code(responses, image_height: int, image_width
             start_box = action_inputs.get("start_box")
             end_box = action_inputs.get("end_box")
             if start_box and end_box:
-                x1, y1, x2, y2 = ast.literal_eval(start_box)  # Assuming box is in [x1, y1, x2, y2]
+                x1, y1, x2, y2 = eval(start_box)  # Assuming box is in [x1, y1, x2, y2]
                 sx = round(float((x1 + x2) / 2) * image_width, 3)
                 sy = round(float((y1 + y2) / 2) * image_height, 3)
                 x1, y1, x2, y2 = eval(end_box)  # Assuming box is in [x1, y1, x2, y2]
