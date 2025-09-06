@@ -83,13 +83,14 @@ if __name__ == '__main__':
     # Calculate the new dimensions
     new_height, new_width = smart_resize(height, width)
     new_coordinate = (
-        int(model_output_width / new_width * width),
-        int(model_output_height / new_height * height),
+        int(model_output_width / width * new_width),
+        int(model_output_height / height * new_height),
     )
     print(f'Resized dimensions: {new_width}, {new_height}')
     print(new_coordinate)
 
     # Display the image
+    img = img.resize((new_width, new_height))
     plt.imshow(img)
     plt.scatter(
         [new_coordinate[0]], [new_coordinate[1]], c='red', s=50
