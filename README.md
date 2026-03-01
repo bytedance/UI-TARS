@@ -15,7 +15,7 @@
 </div>
 
 We also offer a **UI-TARS-desktop** version, which can operate on your **local personal device**. To use it, please visit [https://github.com/bytedance/UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop). To use UI-TARS in web automation, you may refer to the open-source project [Midscene.js](https://github.com/web-infra-dev/Midscene).
-**❗Notes**: Since Qwen 2.5vl based models ultilizes absolute coordinates to ground objects, please kindly refer to our illustration about how to process coordinates in this <a href="README_coordinates.md">guide</a>.
+**❗Notes**: Since Qwen 2.5vl based models utilizes absolute coordinates to ground objects, please kindly refer to our illustration about how to process coordinates in this <a href="README_coordinates.md">guide</a>.
 
 ## Updates
 - 🌟 2025.09.04: We’re excited to announce the release the **UI-TARS-2**, which is a major upgrade from UI-TARS-1.5, featuring with enhanced capabilities in GUI, Game, Code and Tool Use. It is an "All In One" Agent model, enabling seamless integration of multiple abilities for complex tasks. Please check our new [technical report](https://arxiv.org/abs/2509.02544) for more details. Refer to more fantastic showcases at our [website](https://seed-tars.com/showcase/ui-tars-2/).
