@@ -16,8 +16,8 @@ def convert_point_to_coordinates(text, is_answer=False):
 
     def replace_match(match):
         x1, y1 = map(int, match.groups())
-        x = (x1 + x1) // 2  # 使用截断取整
-        y = (y1 + y1) // 2  # 使用截断取整
+        x = (x1 + x2) // 2  # 使用截断取整
+        y = (y1 + y2) // 2  # 使用截断取整
         if is_answer:
             return f"({x},{y})"  # 只返回 (x, y) 格式
         return f"({x},{y})"  # 返回带标签的格式
