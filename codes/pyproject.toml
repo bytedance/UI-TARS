@@ -8,20 +8,26 @@ authors = [
     { name = "jinxin001", email = "jinxin001@bytedance.com" }
 ]
 requires-python = ">=3.10,<4.0"
-dependencies = []
+dependencies = [
+    "pyautogui>=0.9.54",
+    "pyperclip>=1.8.2",
+]
+
+[project.optional-dependencies]
+windows = [
+    "pywin32>=306",
+]
+dev = [
+    "matplotlib>=3.10.3",
+    "pillow>=11.2.1",
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.envs.test.scripts]
-test = "python -m unittest discover tests '*_test.py'"
-publish = "python -m unittest discover tests '*_test.py' && uv build && uv publish"
-
-[tool.black]
-line-length = 88
-target-version = ['py310']
-include = '\.pyi?$'
+[tool.hatch.envs.test]
+scripts.test = "python -m unittest discover tests '*_test.py'"
 
 [tool.hatch.build]
 include = [
@@ -30,8 +36,7 @@ include = [
     "!ui_tars/**/tests.py"
 ]
 
-[tool.uv]
-dev-dependencies = [
-    "matplotlib>=3.10.3",
-    "pillow>=11.2.1",
-]
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
