@@ -405,8 +405,15 @@ def parsing_response_to_pyautogui_code(responses,
             content = action_inputs.get("content", "")
             content = escape_single_quotes(content)
             stripped_content = content
-            if content.endswith("\n") or content.endswith("\\n"):
-                stripped_content = stripped_content.rstrip("\\n").rstrip("\n")
+            # Strip the trailing newline marker(s) so Enter can be pressed
+            # separately. Use suffix removal rather than ``str.rstrip("\\n")``,
+            # because ``rstrip`` treats its argument as a set of characters and
+            # would also eat real trailing ``n``/``\`` characters from the
+            # content (e.g. "Login\n" -> "Logi", "Run\n" -> "Ru").
+            while stripped_content.endswith("\\n"):
+                stripped_content = stripped_content[:-2]
+            while stripped_content.endswith("\n"):
+                stripped_content = stripped_content[:-1]
             if content:
                 if input_swap:
                     pyautogui_code += f"\nimport pyperclip"

@@ -32,6 +32,40 @@ class TestActionParser(unittest.TestCase):
         code = parsing_response_to_pyautogui_code(responses, 224, 224)
         self.assertIn('pyautogui.hotkey', code)
 
+    def test_type_with_trailing_newline_preserves_content(self):
+        # After parsing, a real trailing newline becomes the literal "\\n".
+        # The trailing newline must be stripped (so Enter is pressed
+        # separately) WITHOUT eating real trailing "n"/"\\" characters from
+        # the typed text. Regression test for the rstrip("\\n") char-set bug
+        # that turned "Login\\n" into "Logi" and "Run\\n" into "Ru".
+        for raw, expected in [
+            ("Login\\n", "Login"),
+            ("Run\\n", "Run"),
+            ("python\\n", "python"),
+            ("hello world\\n", "hello world"),
+        ]:
+            responses = {
+                "action_type": "type",
+                "action_inputs": {"content": raw},
+            }
+            code = parsing_response_to_pyautogui_code(
+                responses, 1080, 1920, input_swap=False
+            )
+            self.assertIn(f"pyautogui.write('{expected}'", code)
+            # A trailing newline still triggers a separate Enter press.
+            self.assertIn("pyautogui.press('enter')", code)
+
+    def test_type_without_newline_is_unchanged(self):
+        responses = {
+            "action_type": "type",
+            "action_inputs": {"content": "Login"},
+        }
+        code = parsing_response_to_pyautogui_code(
+            responses, 1080, 1920, input_swap=False
+        )
+        self.assertIn("pyautogui.write('Login'", code)
+        self.assertNotIn("pyautogui.press('enter')", code)
+
 
 if __name__ == '__main__':
     unittest.main()
