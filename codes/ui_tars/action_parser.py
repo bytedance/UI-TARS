@@ -11,13 +11,12 @@ MAX_RATIO = 200
 
 
 def convert_point_to_coordinates(text, is_answer=False):
-    # 匹配 <bbox> 后面的四个数字
-    pattern = r"<point>(\d+)\s+(\d+)</point>"
+    # Match point tags emitted by the grounding prompts. Some models separate
+    # x/y with spaces, while others include a comma.
+    pattern = r"<point>\s*(-?\d+(?:\.\d+)?)\s*,?\s+(-?\d+(?:\.\d+)?)\s*</point>"
 
     def replace_match(match):
-        x1, y1 = map(int, match.groups())
-        x = (x1 + x1) // 2  # 使用截断取整
-        y = (y1 + y1) // 2  # 使用截断取整
+        x, y = (_format_coordinate(float(value)) for value in match.groups())
         if is_answer:
             return f"({x},{y})"  # 只返回 (x, y) 格式
         return f"({x},{y})"  # 返回带标签的格式
@@ -25,6 +24,67 @@ def convert_point_to_coordinates(text, is_answer=False):
     # 去掉 [EOS] 并替换 <bbox> 坐标
     text = re.sub(r"\[EOS\]", "", text)
     return re.sub(pattern, replace_match, text).strip()
+
+
+def _format_coordinate(value):
+    if value.is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def _strip_coordinate_tokens(value):
+    return re.sub(r"</?\|?(?:box|point)_(?:start|end)\|?>", "", value)
+
+
+def _parse_coordinate_values(value):
+    if isinstance(value, (tuple, list)):
+        return [float(item) for item in value]
+
+    if value is None:
+        return []
+
+    value = _strip_coordinate_tokens(str(value).strip())
+    try:
+        literal = ast.literal_eval(value)
+        if isinstance(literal, (tuple, list)):
+            return [float(item) for item in literal]
+    except (SyntaxError, ValueError):
+        pass
+
+    return [
+        float(item)
+        for item in re.findall(r"-?\d+(?:\.\d+)?", value)
+    ]
+
+
+def _parse_coordinate_box(value):
+    values = _parse_coordinate_values(value)
+    if len(values) == 2:
+        return values[0], values[1], values[0], values[1]
+    if len(values) == 4:
+        return values[0], values[1], values[2], values[3]
+    raise ValueError(f"Expected 2 or 4 coordinate values, got {value!r}")
+
+
+def _normalize_seed_action_format(text):
+    """Convert doubao-seed compact actions into the normal Action: form."""
+    if "Action:" in text:
+        return text
+
+    match = re.search(
+        r"\b(click)\s*>\s*point\s*>\s*point\s*>\s*"
+        r"(-?\d+(?:\.\d+)?)\s*,?\s+(-?\d+(?:\.\d+)?)",
+        text,
+        re.IGNORECASE,
+    )
+    if not match:
+        return text
+
+    action, x, y = match.groups()
+    think_match = re.search(r"<think[^>]*>(.*?)</think[^>]*>", text, re.DOTALL)
+    thought = think_match.group(1).strip() if think_match else ""
+    prefix = f"Thought: {thought}\n" if thought else ""
+    return f"{prefix}Action: {action.lower()}(point='<point>{x} {y}</point>')"
 
 
 # 定义一个函数来解析每个 action
@@ -150,7 +210,7 @@ def parse_action_to_structure_output(text,
                                      model_type="qwen25vl",
                                      max_pixels=16384 * 28 * 28,
                                      min_pixels=100 * 28 * 28):
-    text = text.strip()
+    text = _normalize_seed_action_format(text.strip())
 
     if "<point>" in text:
         text = convert_point_to_coordinates(text)
@@ -240,15 +300,13 @@ def parse_action_to_structure_output(text,
 
             if "start_box" in param_name or "end_box" in param_name:
                 ori_box = param
-                # Remove parentheses and split the string by commas
-                numbers = ori_box.replace("(", "").replace(")", "").split(",")
+                numbers = _parse_coordinate_values(ori_box)
 
                 # Convert to float and scale by 1000
                 # Qwen2.5vl output absolute coordinates, qwen2vl output relative coordinates
                 if model_type == "qwen25vl":
                     float_numbers = []
                     for num_idx, num in enumerate(numbers):
-                        num = float(num)
                         if (num_idx + 1) % 2 == 0:
                             float_numbers.append(
                                 float(num / smart_resize_height))
@@ -426,12 +484,10 @@ def parsing_response_to_pyautogui_code(responses,
             start_box = action_inputs.get("start_box")
             end_box = action_inputs.get("end_box")
             if start_box and end_box:
-                x1, y1, x2, y2 = eval(
-                    start_box)  # Assuming box is in [x1, y1, x2, y2]
+                x1, y1, x2, y2 = _parse_coordinate_box(start_box)
                 sx = round(float((x1 + x2) / 2) * image_width, 3)
                 sy = round(float((y1 + y2) / 2) * image_height, 3)
-                x1, y1, x2, y2 = eval(
-                    end_box)  # Assuming box is in [x1, y1, x2, y2]
+                x1, y1, x2, y2 = _parse_coordinate_box(end_box)
                 ex = round(float((x1 + x2) / 2) * image_width, 3)
                 ey = round(float((y1 + y2) / 2) * image_height, 3)
                 pyautogui_code += (
@@ -441,9 +497,9 @@ def parsing_response_to_pyautogui_code(responses,
         elif action_type == "scroll":
             # Parsing scroll action
             start_box = action_inputs.get("start_box")
+            end_box = action_inputs.get("end_box")
             if start_box:
-                x1, y1, x2, y2 = eval(
-                    start_box)  # Assuming box is in [x1, y1, x2, y2]
+                x1, y1, x2, y2 = _parse_coordinate_box(start_box)
                 x = round(float((x1 + x2) / 2) * image_width, 3)
                 y = round(float((y1 + y2) / 2) * image_height, 3)
 
@@ -454,7 +510,14 @@ def parsing_response_to_pyautogui_code(responses,
                 y = None
             direction = action_inputs.get("direction", "")
 
-            if x == None:
+            if start_box and end_box:
+                x1, y1, x2, y2 = _parse_coordinate_box(end_box)
+                ex = round(float((x1 + x2) / 2) * image_width, 3)
+                ey = round(float((y1 + y2) / 2) * image_height, 3)
+                pyautogui_code += (
+                    f"\npyautogui.moveTo({x}, {y})\n"
+                    f"\npyautogui.dragTo({ex}, {ey}, duration=1.0)\n")
+            elif x == None:
                 if "up" in direction.lower():
                     pyautogui_code += f"\npyautogui.scroll(5)"
                 elif "down" in direction.lower():
@@ -470,15 +533,8 @@ def parsing_response_to_pyautogui_code(responses,
         ]:
             # Parsing mouse click actions
             start_box = action_inputs.get("start_box")
-            start_box = str(start_box)
             if start_box:
-                start_box = eval(start_box)
-                if len(start_box) == 4:
-                    x1, y1, x2, y2 = start_box  # Assuming box is in [x1, y1, x2, y2]
-                elif len(start_box) == 2:
-                    x1, y1 = start_box
-                    x2 = x1
-                    y2 = y1
+                x1, y1, x2, y2 = _parse_coordinate_box(start_box)
                 x = round(float((x1 + x2) / 2) * image_width, 3)
                 y = round(float((y1 + y2) / 2) * image_height, 3)
                 if action_type == "left_single" or action_type == "click":

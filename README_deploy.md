@@ -81,7 +81,9 @@ def add_box_token(input_string):
     return final_string
 
 client = OpenAI(
-    base_url="https:xxx",
+    # For OpenAI-compatible endpoints, include the /v1 suffix.
+    # Example: "https://your-endpoint.example.com/v1"
+    base_url="https://xxx/v1",
     api_key="hf_xxx"
 )
 

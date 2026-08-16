@@ -60,12 +60,13 @@ print(pyautogui_code)
 
 ```python
 from PIL import Image, ImageDraw
+import ast
 import numpy as np
 import matplotlib.pyplot as plt
 
 image = Image.open("your_image_path.png")
 start_box = parsed_dict[0]["action_inputs"]["start_box"]
-coordinates = eval(start_box)
+coordinates = ast.literal_eval(start_box)
 x1 = int(coordinates[0] * original_image_width)
 y1 = int(coordinates[1] * original_image_height)
 draw = ImageDraw.Draw(image)
@@ -98,6 +99,20 @@ def parse_action_to_structure_output(
 **Description:**
 Parses output action instructions into structured dictionaries, automatically handling coordinate scaling and box/point format conversion.
 
+Supported coordinate/action forms include:
+
+```text
+Action: click(point='<point>200 300</point>')
+Action: click(start_box='(200,300)')
+Action: click(start_box='<|box_start|>(200,300)<|box_end|>')
+Action: scroll(start_box='(800,200)', end_box='(200,800)')
+<think_...>reasoning</think_...>click>point>point>200 300
+```
+
+For Qwen2.5-VL style models, coordinates are treated as absolute coordinates
+in the resized image and are normalized by `smart_resize`. For older
+relative-coordinate models, pass the appropriate `factor`.
+
 **Parameters:**
 - `text`: The output string
 - `factor`: Scaling factor
@@ -124,6 +139,11 @@ def parsing_response_to_pyautogui_code(
 
 **Description:**
 Converts structured actions into a pyautogui script string, supporting click, type, hotkey, drag, scroll, and more.
+
+`scroll` supports both mouse-wheel style actions with `direction` and
+gesture-style actions with `start_box` + `end_box`. Gesture-style scrolls are
+emitted as a `moveTo` + `dragTo` sequence, matching how mobile/emulator scrolls
+are usually executed.
 
 **Parameters:**
 - `responses`: Structured actions (dict or list of dicts)
