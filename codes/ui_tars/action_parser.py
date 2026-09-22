@@ -454,16 +454,27 @@ def parsing_response_to_pyautogui_code(responses,
                 y = None
             direction = action_inputs.get("direction", "")
 
+            # Prompt action space is up/down/left/right. Vertical uses scroll();
+            # horizontal uses hscroll() with the same sign convention (positive
+            # right, negative left), matching positive-up / negative-down.
             if x == None:
                 if "up" in direction.lower():
                     pyautogui_code += f"\npyautogui.scroll(5)"
                 elif "down" in direction.lower():
                     pyautogui_code += f"\npyautogui.scroll(-5)"
+                elif "left" in direction.lower():
+                    pyautogui_code += f"\npyautogui.hscroll(-5)"
+                elif "right" in direction.lower():
+                    pyautogui_code += f"\npyautogui.hscroll(5)"
             else:
                 if "up" in direction.lower():
                     pyautogui_code += f"\npyautogui.scroll(5, x={x}, y={y})"
                 elif "down" in direction.lower():
                     pyautogui_code += f"\npyautogui.scroll(-5, x={x}, y={y})"
+                elif "left" in direction.lower():
+                    pyautogui_code += f"\npyautogui.hscroll(-5, x={x}, y={y})"
+                elif "right" in direction.lower():
+                    pyautogui_code += f"\npyautogui.hscroll(5, x={x}, y={y})"
 
         elif action_type in [
                 "click", "left_single", "left_double", "right_single", "hover"

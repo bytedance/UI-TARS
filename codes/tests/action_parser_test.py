@@ -32,6 +32,37 @@ class TestActionParser(unittest.TestCase):
         code = parsing_response_to_pyautogui_code(responses, 224, 224)
         self.assertIn('pyautogui.hotkey', code)
 
+    def test_scroll_left_and_right_emit_hscroll(self):
+        right = {
+            "action_type": "scroll",
+            "action_inputs": {
+                "direction": "right",
+                "start_box": "[0.5, 0.25, 0.5, 0.25]",
+            },
+        }
+        code = parsing_response_to_pyautogui_code(
+            right, image_height=1000, image_width=2000
+        )
+        self.assertIn("pyautogui.hscroll(5, x=1000.0, y=250.0)", code)
+
+        left = {
+            "action_type": "scroll",
+            "action_inputs": {"direction": "Left"},
+        }
+        code = parsing_response_to_pyautogui_code(
+            left, image_height=1000, image_width=2000
+        )
+        self.assertIn("pyautogui.hscroll(-5)", code)
+        self.assertNotIn("pyautogui.scroll(", code)
+
+        up = {
+            "action_type": "scroll",
+            "action_inputs": {"direction": "up"},
+        }
+        code = parsing_response_to_pyautogui_code(up, image_height=100, image_width=100)
+        self.assertIn("pyautogui.scroll(5)", code)
+        self.assertNotIn("hscroll", code)
+
 
 if __name__ == '__main__':
     unittest.main()
