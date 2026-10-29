@@ -403,20 +403,19 @@ def parsing_response_to_pyautogui_code(responses,
         elif action_type == "type":
             # Parsing typing action using clipboard
             content = action_inputs.get("content", "")
-            content = escape_single_quotes(content)
             stripped_content = content
             if content.endswith("\n") or content.endswith("\\n"):
                 stripped_content = stripped_content.rstrip("\\n").rstrip("\n")
             if content:
                 if input_swap:
                     pyautogui_code += f"\nimport pyperclip"
-                    pyautogui_code += f"\npyperclip.copy('{stripped_content}')"
+                    pyautogui_code += f"\npyperclip.copy({stripped_content!r})"
                     pyautogui_code += f"\npyautogui.hotkey('ctrl', 'v')"
                     pyautogui_code += f"\ntime.sleep(0.5)\n"
                     if content.endswith("\n") or content.endswith("\\n"):
                         pyautogui_code += f"\npyautogui.press('enter')"
                 else:
-                    pyautogui_code += f"\npyautogui.write('{stripped_content}', interval=0.1)"
+                    pyautogui_code += f"\npyautogui.write({stripped_content!r}, interval=0.1)"
                     pyautogui_code += f"\ntime.sleep(0.5)\n"
                     if content.endswith("\n") or content.endswith("\\n"):
                         pyautogui_code += f"\npyautogui.press('enter')"
